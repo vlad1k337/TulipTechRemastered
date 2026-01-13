@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +23,14 @@ FeedforwardIdentification extends OpMode {
     private DcMotorEx flywheel;
 
     private double targetPower = 0.0;
-    private double deltaPower = 0.01;
+    private double deltaPower = 0.05;
 
-    private ArrayList<Double> powers;
-    private ArrayList<Double> velocities;
+    private ArrayList<BigDecimal> powers;
+    private ArrayList<BigDecimal> velocities;
 
     private ElapsedTime spinupTimer;
+
+    private Boolean wentBackwards = false;
 
     @Override
     public void init()
@@ -50,12 +53,9 @@ FeedforwardIdentification extends OpMode {
     @Override
     public void loop()
     {
-        for(int i = 0; i < powers.toArray().length; ++i)
-        {
-            telemetryM.debug(powers.get(i));
-            telemetryM.debug(velocities.get(i));
-            telemetryM.debug(" ");
-        }
+        telemetryM.debug(powers);
+        telemetryM.debug(" ");
+        telemetryM.debug(velocities);
 
         telemetryM.update(telemetry);
 
@@ -65,10 +65,10 @@ FeedforwardIdentification extends OpMode {
         }
 
         flywheel.setPower(targetPower);
-        if(spinupTimer.milliseconds() > 2000)
+        if(spinupTimer.milliseconds() > 1000)
         {
-            powers.add(targetPower);
-            velocities.add(flywheel.getVelocity());
+            powers.add(BigDecimal.valueOf(targetPower));
+            velocities.add(BigDecimal.valueOf(flywheel.getVelocity()));
             targetPower += deltaPower;
 
             spinupTimer.reset();

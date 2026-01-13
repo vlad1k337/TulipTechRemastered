@@ -18,7 +18,7 @@ public class Shooter {
     private double targetVelocity = 0;
 
     // kV = 1 / MAX_RPM, and adjusted for kS
-    public double kS = 0.06, kV = 0.00035, kP = 0.005;
+    public double kS = 0.05378, kV = 0.000363478, kP = 0.005;
 
     public Shooter(HardwareMap hardwareMap) {
         flywheel = hardwareMap.get(DcMotorEx.class, "Shooter");
