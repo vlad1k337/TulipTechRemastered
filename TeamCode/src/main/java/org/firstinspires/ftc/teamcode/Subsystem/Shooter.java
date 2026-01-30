@@ -18,11 +18,11 @@ public class Shooter {
     private final Servo gate;
     private final LED gateIndicator;
 
-    public static final double MID_LINE_VELOCITY = 1370;
-    public static final double FAR_VELOCITY = 1800;
+    public static final double MID_LINE_VELOCITY = 1340;
+    public static final double FAR_VELOCITY = 1700;
 
     private double hoodManualAdjustment = 0.0;
-    private double HOOD_NEAR = 0.41;
+    private double HOOD_NEAR = 0.42;
     private double HOOD_FAR  = 0.53;
 
     private double targetVelocity = 0;
@@ -31,7 +31,7 @@ public class Shooter {
     private boolean gateClosed = false;
 
     // kV = 1 / MAX_RPM, and adjusted for kS
-    public double kS = 0.061, kV = 0.00038, kP = 0.01;
+    public double kS = 0.058, kV = 0.00038, kP = 0.01;
 
     public Shooter(HardwareMap hardwareMap) {
         flywheel = hardwareMap.get(DcMotorEx.class, "Shooter");
@@ -128,7 +128,7 @@ public class Shooter {
     public void gateOpen()
     {
         gateClosed = true;
-        gate.setPosition(-1.0);
+        gate.setPosition(0.0);
         gateIndicator.on();
     }
 

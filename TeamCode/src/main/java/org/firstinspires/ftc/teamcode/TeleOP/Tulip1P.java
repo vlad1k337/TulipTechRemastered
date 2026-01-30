@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.Subsystem.MathUtilities;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.pedroPathing.PoseHolder;
 
-// Test OpMode for one driver to have all the controls
 @TeleOp(name = "Tulip1P")
 public class Tulip1P extends OpMode {
     private Shooter shooter;
@@ -24,17 +24,16 @@ public class Tulip1P extends OpMode {
     private Follower follower;
     private TelemetryManager telemetryM;
 
-    private final Pose startingPose = new Pose(72, 72, 0);
     private PIDFController headingController;
     private boolean headingLock = false;
-    private double targetHeading = Math.toRadians(47);
+    private double targetHeading;
 
     @Override
     public void init() {
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startingPose);
+        follower.setStartingPose(PoseHolder.position);
         follower.update();
 
         headingController = new PIDFController(follower.constants.coefficientsHeadingPIDF);

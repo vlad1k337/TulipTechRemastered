@@ -8,7 +8,7 @@ import com.pedropathing.paths.PathChain;
 
 public class PathsRed {
     public static final Pose startPose = new Pose(124, 121, Math.toRadians(90));
-    final Pose shootingPose = new Pose(101, 100, Math.toRadians(47));
+    final Pose shootingPose = new Pose(101, 100, Math.toRadians(46.5));
 
     final Pose PPG = new Pose(89, 83, Math.toRadians(0));
     final Pose PGP = new Pose(89, 59, Math.toRadians(0));

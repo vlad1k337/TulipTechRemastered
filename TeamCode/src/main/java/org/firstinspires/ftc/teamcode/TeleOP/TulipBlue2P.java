@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Subsystem.MathUtilities;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.pedroPathing.PoseHolder;
 
 // Test OpMode for one driver to have all the controls
 @TeleOp(name = "TulipBlue2P")
@@ -24,8 +25,6 @@ public class TulipBlue2P extends OpMode {
     private Follower follower;
     private TelemetryManager telemetryM;
 
-    private final Pose startingPose = new Pose(89, 59, Math.toRadians(0)).mirror();
-
     private PIDFController headingController;
     private boolean headingLock = false;
     private double targetHeading;
@@ -35,11 +34,10 @@ public class TulipBlue2P extends OpMode {
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startingPose);
+        follower.setStartingPose(PoseHolder.position);
         follower.update();
 
         headingController = new PIDFController(follower.constants.coefficientsHeadingPIDF);
-
 
         shooter   = new Shooter(hardwareMap);
         intake    = new Intake(hardwareMap);
@@ -105,8 +103,10 @@ public class TulipBlue2P extends OpMode {
     {
         updateDrive(gamepad1);
 
-        shooter.update(gamepad2, MathUtilities.calculateDistance(0, 135, follower.getPose().getX(), follower.getPose().getY()));
-        shooter.hoodRegression(MathUtilities.calculateDistance(0 , 135, follower.getPose().getX(), follower.getPose().getY()));
+        double distance = MathUtilities.calculateDistance(12, 135, follower.getPose().getX(), follower.getPose().getY());
+
+        shooter.update(gamepad2, distance);
+        shooter.hoodRegression(distance);
         intake.update(gamepad1, gamepad2);
 
         updateTelemetry();

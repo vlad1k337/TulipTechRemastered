@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Paths.PathsBlue;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.pedroPathing.PoseHolder;
 
 import java.time.Instant;
 
@@ -66,7 +67,27 @@ public class RedFar extends NextFTCOpMode {
         SequentialGroup shoot = new SequentialGroup(
                 shooter.gateOpenCommand(),
                 new Delay(0.5),
-                intake.startCommand()
+
+                intake.startCommand(),
+                new Delay(0.25),
+                shooter.gateCloseCommand(),
+                intake.stopCommand(),
+                new Delay(0.5),
+                shooter.gateOpenCommand(),
+                new Delay(0.4),
+
+                intake.startCommand(),
+                new Delay(0.25),
+                shooter.gateCloseCommand(),
+                intake.stopCommand(),
+                new Delay(0.5),
+                shooter.gateOpenCommand(),
+                new Delay(0.4),
+
+                intake.startCommand(),
+                new Delay(0.2),
+                shooter.gateCloseCommand(),
+                intake.stopCommand()
         );
 
         InstantCommand stopIntake = new InstantCommand(() -> {
@@ -107,6 +128,7 @@ public class RedFar extends NextFTCOpMode {
                 stopShooter,
 
                 // Park
+                new Delay(5),
                 new FollowPath(paths.leave)
         );
     }
@@ -122,8 +144,8 @@ public class RedFar extends NextFTCOpMode {
     public void onUpdate()
     {
         CommandManager.INSTANCE.run();
+        PoseHolder.position = PedroComponent.follower().getPose();
+
         shooter.updateFeedforward();
-        shooter.updateTelemetry(telemetryManager);
-        telemetry.update();
     }
 }

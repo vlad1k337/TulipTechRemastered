@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.Paths.PathsRed;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.pedroPathing.PoseHolder;
 
 import dev.nextftc.core.commands.CommandManager;
 import dev.nextftc.core.commands.delays.Delay;
@@ -153,6 +154,8 @@ public class RedClose12 extends NextFTCOpMode {
     public void onUpdate()
     {
         CommandManager.INSTANCE.run();
+        PoseHolder.position = PedroComponent.follower().getPose();
+
         shooter.updateFeedforward();
     }
 }

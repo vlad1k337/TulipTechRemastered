@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Paths.PathsRed;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.pedroPathing.PoseHolder;
 
 import java.nio.file.Paths;
 
@@ -157,6 +158,8 @@ public class BlueClose12 extends NextFTCOpMode {
     public void onUpdate()
     {
         CommandManager.INSTANCE.run();
+        PoseHolder.position = PedroComponent.follower().getPose();
+
         shooter.updateFeedforward();
     }
 }
