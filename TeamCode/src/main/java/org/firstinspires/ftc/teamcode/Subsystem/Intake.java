@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode.Subsystem;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import dev.nextftc.core.commands.utility.InstantCommand;
 
 public class Intake {
-    private DcMotorEx intake;
+    private final DcMotorEx intake;
 
     public Intake(HardwareMap hardwareMap)
     {
@@ -30,6 +30,11 @@ public class Intake {
         if(gamepad1.bWasPressed() || gamepad2.bWasPressed()) {
             stop();
         }
+
+        if(gamepad1.xWasPressed() || gamepad2.xWasPressed())
+        {
+            reverse();
+        }
     }
 
     public void start()
@@ -37,8 +42,21 @@ public class Intake {
         intake.setPower(-1.0);
     }
 
+    public void reverse() { intake.setPower(0.7);}
+
     public void stop()
     {
         intake.setPower(0.0);
     }
+
+    public InstantCommand startCommand()
+    {
+        return new InstantCommand(this::start);
+    }
+
+    public InstantCommand stopCommand()
+    {
+        return new InstantCommand(this::stop);
+    }
 }
+

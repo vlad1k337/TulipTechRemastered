@@ -17,6 +17,7 @@ public class PathsBlue {
     final Pose IntakePPG = new Pose(120, 83, Math.toRadians(0)).mirror();
     final Pose IntakePGP = new Pose(125, 59, Math.toRadians(0)).mirror();
     final Pose IntakeGPP = new Pose(125, 36, Math.toRadians(0)).mirror();
+    final Pose Gate      = new Pose(130, 70, Math.toRadians(0)).mirror();
 
     public PathChain startToShoot;
     public PathChain moveToPPG, moveToIntakePPG, shootPPG;
@@ -27,7 +28,7 @@ public class PathsBlue {
     {
         startToShoot = follower.pathBuilder()
                 .addPath(new BezierLine(startPose, shootingPose))
-                .setLinearHeadingInterpolation(startPose.getHeading(), shootingPose.getHeading())
+                .setConstantHeadingInterpolation(shootingPose.getHeading())
                 .build();
 
         moveToPPG = follower.pathBuilder()

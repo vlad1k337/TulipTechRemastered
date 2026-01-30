@@ -8,7 +8,7 @@ import com.pedropathing.paths.PathChain;
 
 public class PathsRed {
     public static final Pose startPose = new Pose(124, 121, Math.toRadians(90));
-    final Pose shootingPose = new Pose(101, 101, Math.toRadians(48));
+    final Pose shootingPose = new Pose(101, 100, Math.toRadians(47));
 
     final Pose PPG = new Pose(89, 83, Math.toRadians(0));
     final Pose PGP = new Pose(89, 59, Math.toRadians(0));
@@ -17,6 +17,7 @@ public class PathsRed {
     final Pose IntakePPG = new Pose(120, 83, Math.toRadians(0));
     final Pose IntakePGP = new Pose(125, 59, Math.toRadians(0));
     final Pose IntakeGPP = new Pose(125, 36, Math.toRadians(0));
+    final Pose Gate      = new Pose(130, 70, Math.toRadians(0));
 
     public PathChain startToShoot;
     public PathChain moveToPPG, moveToIntakePPG, shootPPG;
@@ -27,7 +28,7 @@ public class PathsRed {
     {
         startToShoot = follower.pathBuilder()
                 .addPath(new BezierLine(startPose, shootingPose))
-                .setLinearHeadingInterpolation(startPose.getHeading(), shootingPose.getHeading())
+                .setConstantHeadingInterpolation(shootingPose.getHeading())
                 .build();
 
         moveToPPG = follower.pathBuilder()
@@ -58,7 +59,7 @@ public class PathsRed {
                 .build();
 
         shootPGP = follower.pathBuilder()
-                .addPath(new BezierCurve(IntakePGP, GPP, shootingPose))
+                .addPath(new BezierLine(IntakePGP, shootingPose))
                 .setLinearHeadingInterpolation(IntakePGP.getHeading(), shootingPose.getHeading())
                 .build();
 
