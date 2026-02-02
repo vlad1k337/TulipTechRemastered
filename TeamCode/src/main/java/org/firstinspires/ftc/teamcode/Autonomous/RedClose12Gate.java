@@ -16,8 +16,8 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 
-@Autonomous(name = "RedClose12")
-public class RedClose12 extends NextFTCOpMode {
+@Autonomous(name = "RedClose12Gate")
+public class RedClose12Gate extends NextFTCOpMode {
     // Pretty self-explanatory, mess around with this values if the robot takes too much time shooting
     // Delay is always in seconds.
     private static final double TIME_TO_SHOOT_PRELOAD = 2;
@@ -32,7 +32,7 @@ public class RedClose12 extends NextFTCOpMode {
     private SequentialGroup autoCommands;
 
     // Let NextFTC know about Pedro
-    public RedClose12()
+    public RedClose12Gate()
     {
         addComponents(
                 new PedroComponent(Constants::createFollower)
@@ -110,6 +110,10 @@ public class RedClose12 extends NextFTCOpMode {
                 ),
                 new FollowPath(paths.moveToIntakePGP).then(
                         prepareShooters
+                ),
+
+                new FollowPath(paths.openGate).then(
+                        new Delay(1.5)
                 ),
 
                 new FollowPath((paths.shootPGP)).then(

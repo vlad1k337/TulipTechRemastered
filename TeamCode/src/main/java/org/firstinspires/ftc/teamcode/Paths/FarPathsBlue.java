@@ -10,8 +10,8 @@ public class FarPathsBlue {
     final Pose shootingPose = new Pose(85, 21, Math.toRadians(68)).mirror();
 
     final Pose startPGP  = new Pose(132, 21,  Math.toRadians(300)).mirror();
-    final Pose endPGP = new Pose(133, 12, Math.toRadians(320)).mirror();
-    final Pose parkPose  = new Pose(85, 37, Math.toRadians(90)).mirror();
+    final Pose endPGP    = new Pose(133, 12, Math.toRadians(320)).mirror();
+    final Pose parkPose  = new Pose(85, 45, Math.toRadians(90)).mirror();
 
     public PathChain turnToShoot;
     public PathChain intakePGP;

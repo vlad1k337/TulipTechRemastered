@@ -11,7 +11,7 @@ public class FarPathsRed {
 
     final Pose startPGP  = new Pose(132, 21,  Math.toRadians(300));
     final Pose endPGP = new Pose(133, 12, Math.toRadians(320));
-    final Pose parkPose  = new Pose(85, 37, Math.toRadians(90));
+    final Pose parkPose  = new Pose(85, 45, Math.toRadians(90));
 
     public PathChain turnToShoot;
     public PathChain intakePGP;

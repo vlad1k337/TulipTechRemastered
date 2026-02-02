@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.Paths.PathsBlue;
 import org.firstinspires.ftc.teamcode.Paths.PathsRed;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
@@ -16,8 +18,8 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 
-@Autonomous(name = "RedClose12")
-public class RedClose12 extends NextFTCOpMode {
+@Autonomous(name = "BlueClose12Gate")
+public class BlueClose12Gate extends NextFTCOpMode {
     // Pretty self-explanatory, mess around with this values if the robot takes too much time shooting
     // Delay is always in seconds.
     private static final double TIME_TO_SHOOT_PRELOAD = 2;
@@ -25,14 +27,14 @@ public class RedClose12 extends NextFTCOpMode {
     private static final double TIME_TO_SHOOT_PGP = 2;
     private static final double TIME_TO_SHOOT_GPP = 2;
 
-    private PathsRed paths;
+    private PathsBlue paths;
 
     private Shooter shooter;
     private Intake intake;
     private SequentialGroup autoCommands;
 
     // Let NextFTC know about Pedro
-    public RedClose12()
+    public BlueClose12Gate()
     {
         addComponents(
                 new PedroComponent(Constants::createFollower)
@@ -41,9 +43,9 @@ public class RedClose12 extends NextFTCOpMode {
 
     private SequentialGroup autonomousRoutine()
     {
-        PedroComponent.follower().setStartingPose(PathsRed.startPose);
+        PedroComponent.follower().setStartingPose(PathsBlue.startPose);
 
-        paths = new PathsRed(PedroComponent.follower());
+        paths = new PathsBlue(PedroComponent.follower());
 
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
@@ -110,6 +112,10 @@ public class RedClose12 extends NextFTCOpMode {
                 ),
                 new FollowPath(paths.moveToIntakePGP).then(
                         prepareShooters
+                ),
+
+                new FollowPath(paths.openGate).then(
+                        new Delay(1.5)
                 ),
 
                 new FollowPath((paths.shootPGP)).then(

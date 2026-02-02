@@ -8,7 +8,7 @@ import com.pedropathing.paths.PathChain;
 
 public class PathsBlue {
     public static final Pose startPose = new Pose(20, 121, Math.toRadians(90));
-    final Pose shootingPose = new Pose(43, 100, Math.toRadians(138));
+    final Pose shootingPose = new Pose(43, 100, Math.toRadians(139));
 
     final Pose PPG = new Pose(89, 83, Math.toRadians(0)).mirror();
     final Pose PGP = new Pose(89, 59, Math.toRadians(0)).mirror();
@@ -17,12 +17,13 @@ public class PathsBlue {
     final Pose IntakePPG = new Pose(120, 83, Math.toRadians(0)).mirror();
     final Pose IntakePGP = new Pose(125, 59, Math.toRadians(0)).mirror();
     final Pose IntakeGPP = new Pose(125, 36, Math.toRadians(0)).mirror();
-    final Pose Gate      = new Pose(130, 70, Math.toRadians(0)).mirror();
+    final Pose Gate      = new Pose(133, 72, Math.toRadians(90)).mirror();
 
     public PathChain startToShoot;
     public PathChain moveToPPG, moveToIntakePPG, shootPPG;
     public PathChain moveToPGP, moveToIntakePGP, shootPGP;
     public PathChain moveToGPP, moveToIntakeGPP, shootGPP;
+    public PathChain openGate;
 
     public PathsBlue(Follower follower)
     {
@@ -77,6 +78,11 @@ public class PathsBlue {
         shootGPP = follower.pathBuilder()
                 .addPath(new BezierLine(IntakeGPP, shootingPose))
                 .setLinearHeadingInterpolation(IntakeGPP.getHeading(), shootingPose.getHeading())
+                .build();
+
+        openGate = follower.pathBuilder()
+                .addPath(new BezierCurve(IntakePGP, new Pose(47, 59), Gate))
+                .setLinearHeadingInterpolation(IntakePGP.getHeading(), Gate.getHeading())
                 .build();
     }
 }

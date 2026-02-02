@@ -42,7 +42,7 @@ public class Intake {
         intake.setPower(-1.0);
     }
 
-    public void reverse() { intake.setPower(0.7);}
+    public void reverse() { intake.setPower(1.0);}
 
     public void stop()
     {

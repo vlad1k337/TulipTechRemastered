@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOP;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.PoseHolder.position;
+
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.control.PIDFController;
@@ -13,7 +15,6 @@ import org.firstinspires.ftc.teamcode.Subsystem.MathUtilities;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
-import org.firstinspires.ftc.teamcode.pedroPathing.PoseHolder;
 
 // Test OpMode for one driver to have all the controls
 @TeleOp(name = "TulipRed2P")
@@ -32,8 +33,7 @@ public class TulipRed2P extends OpMode {
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(PoseHolder.position);
-        follower.update();
+        follower.setStartingPose(position);
 
         headingController = new PIDFController(follower.constants.coefficientsHeadingPIDF);
 
@@ -55,7 +55,7 @@ public class TulipRed2P extends OpMode {
             return 0;
         }
 
-        targetHeading = Math.atan2(follower.getPose().getX(), follower.getPose().getY());
+        targetHeading = Math.atan2(138 - follower.getPose().getY(), 132 - follower.getPose().getX());
 
         return MathFunctions.getTurnDirection(follower.getPose().getHeading(), targetHeading)
                 * MathFunctions.getSmallestAngleDifference(follower.getPose().getHeading(), targetHeading);
@@ -102,12 +102,13 @@ public class TulipRed2P extends OpMode {
     {
         updateDrive(gamepad1);
 
-        double distance = MathUtilities.calculateDistance(132, 135, follower.getPose().getX(), follower.getPose().getY());
+        double distance = MathUtilities.calculateDistance(132, 138, follower.getPose().getX(), follower.getPose().getY());
 
         shooter.update(gamepad2, distance);
         shooter.hoodRegression(distance);
 
         intake.update(gamepad1, gamepad2);
+        position = follower.getPose();
 
         updateTelemetry();
     }

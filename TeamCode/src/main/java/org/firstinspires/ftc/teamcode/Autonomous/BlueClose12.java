@@ -162,4 +162,10 @@ public class BlueClose12 extends NextFTCOpMode {
 
         shooter.updateFeedforward();
     }
+
+    @Override
+    public void onStop()
+    {
+        PoseHolder.position = PedroComponent.follower().getPose();
+    }
 }

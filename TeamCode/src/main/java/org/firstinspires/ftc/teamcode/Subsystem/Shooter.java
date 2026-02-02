@@ -17,6 +17,7 @@ public class Shooter {
     private final Servo hood;
     private final Servo gate;
     private final LED gateIndicator;
+    private final LED flywheelIndicator;
 
     public static final double MID_LINE_VELOCITY = 1340;
     public static final double FAR_VELOCITY = 1700;
@@ -31,7 +32,7 @@ public class Shooter {
     private boolean gateClosed = false;
 
     // kV = 1 / MAX_RPM, and adjusted for kS
-    public double kS = 0.058, kV = 0.00038, kP = 0.01;
+    public double kS = 0.053, kV = 0.00038, kP = 0.01;
 
     public Shooter(HardwareMap hardwareMap) {
         flywheel = hardwareMap.get(DcMotorEx.class, "Shooter");
@@ -44,6 +45,7 @@ public class Shooter {
         hood = hardwareMap.get(Servo.class, "Hood");
         gate = hardwareMap.get(Servo.class, "Gate");
         gateIndicator = hardwareMap.get(LED.class, "GateIndicator");
+        flywheelIndicator = hardwareMap.get(LED.class, "FlywheelIndicator");
     }
 
     public void update(Gamepad gamepad, double distance)
@@ -93,11 +95,18 @@ public class Shooter {
         }
 
         hood.setPosition(targetGatePos);
+
     }
 
     public void updateFeedforward()
     {
         flywheel.setPower((kV * targetVelocity) + (kP * (targetVelocity - flywheel.getVelocity())) + kS);
+        if(targetVelocity > 0.0)
+        {
+            flywheelIndicator.on();
+        } else {
+            flywheelIndicator.off();
+        }
     }
 
     public void updateTelemetry(TelemetryManager telemetry)

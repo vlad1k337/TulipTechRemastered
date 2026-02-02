@@ -69,7 +69,7 @@ public class RedFar extends NextFTCOpMode {
                 new Delay(0.5),
 
                 intake.startCommand(),
-                new Delay(0.25),
+                new Delay(0.15),
                 shooter.gateCloseCommand(),
                 intake.stopCommand(),
                 new Delay(0.5),
@@ -77,7 +77,7 @@ public class RedFar extends NextFTCOpMode {
                 new Delay(0.4),
 
                 intake.startCommand(),
-                new Delay(0.25),
+                new Delay(0.15),
                 shooter.gateCloseCommand(),
                 intake.stopCommand(),
                 new Delay(0.5),
@@ -85,7 +85,7 @@ public class RedFar extends NextFTCOpMode {
                 new Delay(0.4),
 
                 intake.startCommand(),
-                new Delay(0.2),
+                new Delay(0.15),
                 shooter.gateCloseCommand(),
                 intake.stopCommand()
         );
@@ -147,5 +147,11 @@ public class RedFar extends NextFTCOpMode {
         PoseHolder.position = PedroComponent.follower().getPose();
 
         shooter.updateFeedforward();
+    }
+
+    @Override
+    public void onStop()
+    {
+        PoseHolder.position = PedroComponent.follower().getPose();
     }
 }

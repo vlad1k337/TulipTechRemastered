@@ -10,19 +10,20 @@ public class PathsRed {
     public static final Pose startPose = new Pose(124, 121, Math.toRadians(90));
     final Pose shootingPose = new Pose(101, 100, Math.toRadians(46.5));
 
-    final Pose PPG = new Pose(89, 83, Math.toRadians(0));
-    final Pose PGP = new Pose(89, 59, Math.toRadians(0));
-    final Pose GPP = new Pose(89, 36, Math.toRadians(0));
+    final Pose PPG = new Pose(93, 83, Math.toRadians(0));
+    final Pose PGP = new Pose(93, 59, Math.toRadians(0));
+    final Pose GPP = new Pose(93, 36, Math.toRadians(0));
 
     final Pose IntakePPG = new Pose(120, 83, Math.toRadians(0));
     final Pose IntakePGP = new Pose(125, 59, Math.toRadians(0));
     final Pose IntakeGPP = new Pose(125, 36, Math.toRadians(0));
-    final Pose Gate      = new Pose(130, 70, Math.toRadians(0));
+    final Pose Gate      = new Pose(130, 70, Math.toRadians(270));
 
     public PathChain startToShoot;
     public PathChain moveToPPG, moveToIntakePPG, shootPPG;
     public PathChain moveToPGP, moveToIntakePGP, shootPGP;
     public PathChain moveToGPP, moveToIntakeGPP, shootGPP;
+    public PathChain openGate;
 
     public PathsRed(Follower follower)
     {
@@ -77,6 +78,11 @@ public class PathsRed {
         shootGPP = follower.pathBuilder()
                 .addPath(new BezierLine(IntakeGPP, shootingPose))
                 .setLinearHeadingInterpolation(IntakeGPP.getHeading(), shootingPose.getHeading())
+                .build();
+
+        openGate = follower.pathBuilder()
+                .addPath(new BezierCurve(IntakePGP, new Pose(97, 59), Gate))
+                .setLinearHeadingInterpolation(IntakePGP.getHeading(), Gate.getHeading())
                 .build();
     }
 }

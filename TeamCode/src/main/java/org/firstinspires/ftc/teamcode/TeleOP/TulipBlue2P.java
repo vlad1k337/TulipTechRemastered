@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.TeleOP;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.PoseHolder.position;
+
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.control.PIDFController;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -33,8 +36,7 @@ public class TulipBlue2P extends OpMode {
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(PoseHolder.position);
-        follower.update();
+        follower.setStartingPose(position);
 
         headingController = new PIDFController(follower.constants.coefficientsHeadingPIDF);
 
@@ -55,7 +57,7 @@ public class TulipBlue2P extends OpMode {
             return 0;
         }
 
-        targetHeading = Math.atan2(follower.getPose().getX(), follower.getPose().getY()) + Math.toRadians(90);
+        targetHeading = Math.atan2(138 - follower.getPose().getY(), 12 - follower.getPose().getX());
 
         return MathFunctions.getTurnDirection(follower.getPose().getHeading(), targetHeading)
                 * MathFunctions.getSmallestAngleDifference(follower.getPose().getHeading(), targetHeading);
@@ -102,11 +104,13 @@ public class TulipBlue2P extends OpMode {
     {
         updateDrive(gamepad1);
 
-        double distance = MathUtilities.calculateDistance(12, 135, follower.getPose().getX(), follower.getPose().getY());
+        double distance = MathUtilities.calculateDistance(12, 138, follower.getPose().getX(), follower.getPose().getY());
 
         shooter.update(gamepad2, distance);
         shooter.hoodRegression(distance);
         intake.update(gamepad1, gamepad2);
+
+        position = follower.getPose();
 
         updateTelemetry();
     }

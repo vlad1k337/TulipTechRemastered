@@ -102,7 +102,9 @@ public class Tulip1P extends OpMode {
     {
         updateDrive(gamepad1);
 
-        shooter.update(gamepad1, MathUtilities.calculateDistance(132, 135 , follower.getPose().getX(), follower.getPose().getY()));
+        double distance = MathUtilities.calculateDistance(12, 135, follower.getPose().getX(), follower.getPose().getY());
+        shooter.update(gamepad1, distance);
+        shooter.hoodRegression(distance);
 
         intake.update(gamepad1, gamepad2);
 

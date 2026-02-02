@@ -66,7 +66,7 @@ public class BlueFar extends NextFTCOpMode {
                 new Delay(0.5),
 
                 intake.startCommand(),
-                new Delay(0.25),
+                new Delay(0.15),
                 shooter.gateCloseCommand(),
                 intake.stopCommand(),
                 new Delay(0.5),
@@ -74,7 +74,7 @@ public class BlueFar extends NextFTCOpMode {
                 new Delay(0.4),
 
                 intake.startCommand(),
-                new Delay(0.25),
+                new Delay(0.15),
                 shooter.gateCloseCommand(),
                 intake.stopCommand(),
                 new Delay(0.5),
@@ -82,7 +82,7 @@ public class BlueFar extends NextFTCOpMode {
                 new Delay(0.4),
 
                 intake.startCommand(),
-                new Delay(0.2),
+                new Delay(0.15),
                 shooter.gateCloseCommand(),
                 intake.stopCommand()
         );
@@ -114,7 +114,7 @@ public class BlueFar extends NextFTCOpMode {
                 new FollowPath(paths.shootPGP),
                 prepareShooters.then(
                         stopIntake,
-                        new Delay(2.0)
+                        new Delay(1.5)
                 ),
 
                 // Shoot
@@ -144,5 +144,11 @@ public class BlueFar extends NextFTCOpMode {
         PoseHolder.position = PedroComponent.follower().getPose();
 
         shooter.updateFeedforward();
+    }
+
+    @Override
+    public void onStop()
+    {
+        PoseHolder.position = PedroComponent.follower().getPose();
     }
 }
