@@ -112,7 +112,12 @@ public class TulipPractice2P extends OpMode {
         shooter.hoodRegression(distance);
         intake.update(gamepad1, gamepad2);
 
-        limelight.positionFromTag(follower.getHeading(), telemetryM);
+        double heading = follower.getHeading();
+        Pose relocalizationPose = limelight.positionFromTag(heading, telemetryM);
+        if(relocalizationPose != null && System.nanoTime() % 100 == 0)
+        {
+            follower.setPose(relocalizationPose);
+        }
 
         updateTelemetry();
     }

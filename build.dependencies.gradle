@@ -3,6 +3,7 @@ repositories {
     google() // Needed for androidx
     maven { url = "https://mymaven.bylazar.com/releases" }
     maven { url = 'https://central.sonatype.com/repository/maven-snapshots/'}
+    maven { url = "https://maven.wpilib.org/artifactory/release" }
     maven { url "https://jitpack.io" }
 }
 

@@ -32,7 +32,7 @@ public class Shooter {
     private boolean gateClosed = false;
 
     // kV = 1 / MAX_RPM, and adjusted for kS
-    public double kS = 0.053, kV = 0.00038, kP = 0.01;
+    public double kS = 0.049, kV = 0.00038, kP = 0.01;
 
     public Shooter(HardwareMap hardwareMap) {
         flywheel = hardwareMap.get(DcMotorEx.class, "Shooter");
