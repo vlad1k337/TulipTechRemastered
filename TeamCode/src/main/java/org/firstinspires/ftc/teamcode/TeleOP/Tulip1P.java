@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.Subsystem.MathUtilities;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
-import org.firstinspires.ftc.teamcode.pedroPathing.PoseHolder;
 
 @TeleOp(name = "Tulip1P")
 public class Tulip1P extends OpMode {
@@ -33,7 +32,7 @@ public class Tulip1P extends OpMode {
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(PoseHolder.position);
+        follower.setStartingPose(new Pose(72, 72, 0));
         follower.update();
 
         headingController = new PIDFController(follower.constants.coefficientsHeadingPIDF);

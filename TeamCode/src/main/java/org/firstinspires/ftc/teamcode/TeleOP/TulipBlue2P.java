@@ -6,7 +6,7 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.control.PIDFController;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
+import com.pedropathing.localization.Localizer;
 import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.Subsystem.MathUtilities;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
-import org.firstinspires.ftc.teamcode.pedroPathing.PoseHolder;
 
 // Test OpMode for one driver to have all the controls
 @TeleOp(name = "TulipBlue2P")
@@ -25,6 +24,7 @@ public class TulipBlue2P extends OpMode {
     private Intake intake;
 
     private Follower follower;
+    private Localizer localizer;
     private TelemetryManager telemetryM;
 
     private PIDFController headingController;
@@ -36,18 +36,18 @@ public class TulipBlue2P extends OpMode {
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(position);
+        follower.setPose(position);
+        localizer = follower.poseTracker.getLocalizer();
 
         headingController = new PIDFController(follower.constants.coefficientsHeadingPIDF);
 
-        shooter   = new Shooter(hardwareMap);
-        intake    = new Intake(hardwareMap);
+        shooter = new Shooter(hardwareMap);
+        intake  = new Intake(hardwareMap);
     }
 
     @Override
     public void start() {
         follower.startTeleopDrive();
-        follower.update();
     }
 
     private double getHeadingError()
@@ -109,8 +109,6 @@ public class TulipBlue2P extends OpMode {
         shooter.update(gamepad2, distance);
         shooter.hoodRegression(distance);
         intake.update(gamepad1, gamepad2);
-
-        position = follower.getPose();
 
         updateTelemetry();
     }

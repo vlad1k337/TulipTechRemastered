@@ -37,15 +37,13 @@ public class TulipRed2P extends OpMode {
 
         headingController = new PIDFController(follower.constants.coefficientsHeadingPIDF);
 
-
-        shooter   = new Shooter(hardwareMap);
-        intake    = new Intake(hardwareMap);
+        shooter  = new Shooter(hardwareMap);
+        intake   = new Intake(hardwareMap);
     }
 
     @Override
     public void start() {
         follower.startTeleopDrive();
-        follower.update();
     }
 
     private double getHeadingError()
