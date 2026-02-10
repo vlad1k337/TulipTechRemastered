@@ -1,0 +1,119 @@
+package org.firstinspires.ftc.teamcode.TeleOP;
+
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.control.PIDFController;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.localization.Localizer;
+import com.pedropathing.math.MathFunctions;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
+
+import org.firstinspires.ftc.teamcode.Subsystem.LimelightSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystem.MathUtilities;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.Subsystem.Intake;
+import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.pedroPathing.FusionLocalizer;
+
+// Test OpMode for one driver to have all the controls
+@TeleOp(name = "TulipPractice2P")
+public class TulipPractice2P extends OpMode {
+    private Shooter shooter;
+    private Intake intake;
+    private LimelightSubsystem limelight;
+
+    private Follower follower;
+    private TelemetryManager telemetryM;
+
+    private PIDFController headingController;
+    private boolean headingLock = false;
+    private double targetHeading;
+
+    @Override
+    public void init() {
+        telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
+
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose(72, 72, 0));
+
+        limelight = new LimelightSubsystem(hardwareMap);
+        headingController = new PIDFController(follower.constants.coefficientsHeadingPIDF);
+
+        shooter   = new Shooter(hardwareMap);
+        intake    = new Intake(hardwareMap);
+    }
+
+    @Override
+    public void start() {
+        follower.startTeleopDrive();
+    }
+
+    private double getHeadingError()
+    {
+        if(follower.getCurrentPath() != null)
+        {
+            return 0;
+        }
+
+        targetHeading = Math.atan2(138 - follower.getPose().getY(), 132 - follower.getPose().getX());
+
+        return MathFunctions.getTurnDirection(follower.getPose().getHeading(), targetHeading)
+                * MathFunctions.getSmallestAngleDifference(follower.getPose().getHeading(), targetHeading);
+    }
+
+    private void updateDrive(Gamepad gamepad) {
+        headingController.setCoefficients(follower.constants.coefficientsHeadingPIDF);
+        headingController.updateError(getHeadingError());
+
+        if (gamepad.yWasPressed()) {
+            headingLock = !headingLock;
+        }
+
+        if (headingLock) {
+            follower.setTeleOpDrive(
+                    MathUtilities.expo(-gamepad.left_stick_y),
+                    MathUtilities.expo(-gamepad.left_stick_x),
+                    headingController.run()
+            );
+        } else {
+            follower.setTeleOpDrive(
+                    MathUtilities.expo(-gamepad.left_stick_y),
+                    MathUtilities.expo(-gamepad.left_stick_x),
+                    MathUtilities.expo(-gamepad.right_stick_x)
+            );
+        }
+
+        follower.update();
+    }
+
+    private void updateTelemetry()
+    {
+        shooter.updateTelemetry(telemetryM);
+        telemetryM.addData("Heading", Math.toDegrees(follower.getHeading()));
+        telemetryM.addData("Target Heading", Math.toDegrees(targetHeading));
+        telemetryM.addData("X", follower.getPose().getX());
+        telemetryM.addData("Y", follower.getPose().getY());
+        telemetryM.addData("Distance to (0, 144)", MathUtilities.calculateDistance(0, 144, follower.getPose().getX(), follower.getPose().getY()));
+        telemetryM.addData("MT2 Angle Difference", limelight.angleFromTag());
+        telemetryM.update(telemetry);
+    }
+
+    @Override
+    public void loop()
+    {
+        updateDrive(gamepad1);
+
+        double distance = MathUtilities.calculateDistance(132, 138, follower.getPose().getX(), follower.getPose().getY());
+
+        shooter.update(gamepad2, distance);
+        shooter.hoodRegression(distance);
+        intake.update(gamepad1, gamepad2);
+
+        limelight.positionFromTag(follower.getHeading(), telemetryM);
+
+        updateTelemetry();
+    }
+}
