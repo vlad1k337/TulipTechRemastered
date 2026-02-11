@@ -25,8 +25,6 @@ import dev.nextftc.ftc.NextFTCOpMode;
 public class BlueFar extends NextFTCOpMode {
     private final double TIME_TO_SHOOT_PRELOAD = 5.0;
 
-    private SequentialGroup autoCommands;
-
     private FarPathsBlue paths;
     private Shooter shooter;
     private Intake intake;
@@ -133,7 +131,7 @@ public class BlueFar extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed()
     {
-        autoCommands = autonomousRoutine();
+        SequentialGroup autoCommands = autonomousRoutine();
         autoCommands.schedule();
     }
 

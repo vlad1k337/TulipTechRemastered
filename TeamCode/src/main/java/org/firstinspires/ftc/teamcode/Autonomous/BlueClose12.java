@@ -33,7 +33,6 @@ public class BlueClose12 extends NextFTCOpMode {
 
     private Shooter shooter;
     private Intake intake;
-    private SequentialGroup autoCommands;
 
     // Let NextFTC know about Pedro
     public BlueClose12()
@@ -150,7 +149,7 @@ public class BlueClose12 extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed()
     {
-        autoCommands = autonomousRoutine();
+        SequentialGroup autoCommands = autonomousRoutine();
         autoCommands.schedule();
     }
 

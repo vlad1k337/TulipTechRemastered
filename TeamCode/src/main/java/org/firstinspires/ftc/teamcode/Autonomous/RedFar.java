@@ -26,9 +26,6 @@ import dev.nextftc.ftc.NextFTCOpMode;
 public class RedFar extends NextFTCOpMode {
     private final double TIME_TO_SHOOT_PRELOAD = 3.0;
 
-    private SequentialGroup autoCommands;
-    private TelemetryManager telemetryManager;
-
     private FarPathsRed paths;
     private Shooter shooter;
     private Intake intake;
@@ -44,7 +41,6 @@ public class RedFar extends NextFTCOpMode {
         PedroComponent.follower().setStartingPose(FarPathsRed.startPose);
 
         paths = new FarPathsRed(PedroComponent.follower());
-        telemetryManager = PanelsTelemetry.INSTANCE.getTelemetry();
 
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
@@ -136,7 +132,7 @@ public class RedFar extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed()
     {
-        autoCommands = autonomousRoutine();
+        SequentialGroup autoCommands = autonomousRoutine();
         autoCommands.schedule();
     }
 

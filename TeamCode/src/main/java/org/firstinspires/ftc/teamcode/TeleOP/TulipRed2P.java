@@ -6,11 +6,13 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.control.PIDFController;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.MathFunctions;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.Subsystem.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystem.MathUtilities;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
@@ -21,6 +23,8 @@ import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 public class TulipRed2P extends OpMode {
     private Shooter shooter;
     private Intake intake;
+    private LimelightSubsystem limelight;
+
     private Follower follower;
     private TelemetryManager telemetryM;
 
@@ -34,6 +38,7 @@ public class TulipRed2P extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(position);
+        limelight = new LimelightSubsystem(hardwareMap);
 
         headingController = new PIDFController(follower.constants.coefficientsHeadingPIDF);
 
@@ -104,9 +109,14 @@ public class TulipRed2P extends OpMode {
 
         shooter.update(gamepad2, distance);
         shooter.hoodRegression(distance);
+        double heading = follower.getHeading();
+        Pose relocalizationPose = limelight.positionFromTag(heading, telemetryM);
+        if(relocalizationPose != null && System.nanoTime() % 100 == 0)
+        {
+            follower.setPose(relocalizationPose);
+        }
 
         intake.update(gamepad1, gamepad2);
-        position = follower.getPose();
 
         updateTelemetry();
     }
