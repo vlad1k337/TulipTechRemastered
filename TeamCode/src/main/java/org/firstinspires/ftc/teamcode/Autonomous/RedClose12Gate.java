@@ -78,11 +78,30 @@ public class RedClose12Gate extends NextFTCOpMode {
                 setHood,
                 prepareShooters,
                 new FollowPath(paths.startToShoot).then(
-                        new Delay(0.5)
+                        new Delay(0.3)
                 ),
                 new ParallelGroup(
                         shoot,
                         new Delay(TIME_TO_SHOOT_PRELOAD)
+                ),
+                stopShooter,
+
+                // Intake and score PGP
+                new FollowPath(paths.moveToPGP).then(
+                        intake.startCommand()
+                ),
+                new FollowPath(paths.moveToIntakePGP),
+                new FollowPath(paths.openGate).then(
+                        new Delay(0.5),
+                        prepareShooters
+                ),
+
+                new FollowPath((paths.shootPGP)).then(
+                        new Delay(0.3)
+                ),
+                new ParallelGroup(
+                        shoot,
+                        new Delay(TIME_TO_SHOOT_PGP)
                 ),
                 stopShooter,
 
@@ -95,32 +114,11 @@ public class RedClose12Gate extends NextFTCOpMode {
                 ),
 
                 new FollowPath((paths.shootPPG)).then(
-                        new Delay(0.5)
+                        new Delay(0.3)
                 ),
                 new ParallelGroup(
                         shoot,
                         new Delay(TIME_TO_SHOOT_PPG)
-                ),
-                stopShooter,
-
-                // Intake and score PGP
-                new FollowPath(paths.moveToPGP).then(
-                        intake.startCommand()
-                ),
-                new FollowPath(paths.moveToIntakePGP).then(
-                        prepareShooters
-                ),
-
-                new FollowPath(paths.openGate).then(
-                        new Delay(1.5)
-                ),
-
-                new FollowPath((paths.shootPGP)).then(
-                        new Delay(0.5)
-                ),
-                new ParallelGroup(
-                        shoot,
-                        new Delay(TIME_TO_SHOOT_PGP)
                 ),
                 stopShooter,
 
@@ -133,7 +131,7 @@ public class RedClose12Gate extends NextFTCOpMode {
                 ),
 
                 new FollowPath((paths.shootGPP)).then(
-                        new Delay(0.5)
+                        new Delay(0.3)
                 ),
                 new ParallelGroup(
                         shoot,

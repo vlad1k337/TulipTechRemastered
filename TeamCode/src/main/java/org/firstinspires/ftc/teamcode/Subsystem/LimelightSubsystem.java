@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.FusionLocalizer;
 import java.util.List;
 
 public class LimelightSubsystem {
-    private Limelight3A limelight;
+    private final Limelight3A limelight;
     private Pose lastPose = new Pose(0, 0, 0);
 
     public static FusionLocalizer fusionLocalizer = null;
@@ -27,7 +27,7 @@ public class LimelightSubsystem {
     public LimelightSubsystem(HardwareMap hardwareMap)
     {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.setPollRateHz(20);
+        
         limelight.pipelineSwitch(1);
         limelight.start();
     }
