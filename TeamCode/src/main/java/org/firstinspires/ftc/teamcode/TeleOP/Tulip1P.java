@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.TeleOP;
 
-import static org.firstinspires.ftc.teamcode.Subsystem.LimelightSubsystem.fusionLocalizer;
-
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.control.PIDFController;

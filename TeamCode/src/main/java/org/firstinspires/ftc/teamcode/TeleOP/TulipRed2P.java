@@ -68,11 +68,6 @@ public class TulipRed2P extends OpMode {
         headingController.setCoefficients(follower.constants.coefficientsHeadingPIDF);
         headingController.updateError(getHeadingError());
 
-        if(gamepad.rightStickButtonWasPressed())
-        {
-            follower.setPose(new Pose(135, 9, 0));
-        }
-
         if(gamepad.leftStickButtonWasPressed())
         {
             Pose limelightPose = limelight.positionFromTag();

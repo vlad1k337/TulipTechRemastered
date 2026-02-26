@@ -68,11 +68,6 @@ public class TulipBlue2P extends OpMode {
         headingController.setCoefficients(follower.constants.coefficientsHeadingPIDF);
         headingController.updateError(getHeadingError());
 
-        if(gamepad.rightStickButtonWasPressed())
-        {
-            follower.setPose(new Pose(9, 9, Math.toRadians(180)));
-        }
-
         if(gamepad.leftStickButtonWasPressed())
         {
             Pose limelightPose = limelight.positionFromTag();
@@ -118,9 +113,6 @@ public class TulipBlue2P extends OpMode {
     public void loop()
     {
         updateDrive(gamepad1);
-
-        double heading = follower.getHeading();
-        Pose relocalizationPose = limelight.positionFromTag();
 
         double distance = MathUtilities.calculateDistance(12, 138, follower.getPose().getX(), follower.getPose().getY());
         shooter.update(gamepad2, distance);
