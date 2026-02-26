@@ -10,13 +10,13 @@ public class PathsBlue {
     public static final Pose startPose = new Pose(20, 121, Math.toRadians(90));
     final Pose shootingPose = new Pose(43, 100, Math.toRadians(139));
 
-    final Pose PPG = new Pose(89, 83, Math.toRadians(0)).mirror();
-    final Pose PGP = new Pose(89, 59, Math.toRadians(0)).mirror();
-    final Pose GPP = new Pose(89, 36, Math.toRadians(0)).mirror();
+    final Pose PPG = new Pose(100, 83, Math.toRadians(0)).mirror();
+    final Pose PGP = new Pose(100, 59, Math.toRadians(0)).mirror();
+    final Pose GPP = new Pose(100, 36, Math.toRadians(0)).mirror();
 
-    final Pose IntakePPG = new Pose(100, 83, Math.toRadians(0)).mirror();
-    final Pose IntakePGP = new Pose(100, 59, Math.toRadians(0)).mirror();
-    final Pose IntakeGPP = new Pose(100, 36, Math.toRadians(0)).mirror();
+    final Pose IntakePPG = new Pose(120, 83, Math.toRadians(0)).mirror();
+    final Pose IntakePGP = new Pose(128, 59, Math.toRadians(0)).mirror();
+    final Pose IntakeGPP = new Pose(125, 36, Math.toRadians(0)).mirror();
     final Pose Gate      = new Pose(12, 70.5, Math.toRadians(180));
 
     public PathChain startToShoot;
@@ -81,7 +81,7 @@ public class PathsBlue {
                 .build();
 
         openGate = follower.pathBuilder()
-                .addPath(new BezierCurve(IntakePGP, new Pose(37, 72), Gate))
+                .addPath(new BezierCurve(IntakePGP, new Pose(95, 65).mirror(), Gate))
                 .setLinearHeadingInterpolation(IntakePGP.getHeading(), Gate.getHeading())
                 .build();
     }

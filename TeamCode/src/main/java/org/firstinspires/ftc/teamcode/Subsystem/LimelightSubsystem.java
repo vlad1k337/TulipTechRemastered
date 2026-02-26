@@ -5,6 +5,7 @@ import com.pedropathing.ftc.InvertedFTCCoordinates;
 import com.pedropathing.ftc.PoseConverter;
 import com.pedropathing.geometry.PedroCoordinates;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.MathFunctions;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -29,46 +30,38 @@ public class LimelightSubsystem {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         
         limelight.pipelineSwitch(1);
+        limelight.setPollRateHz(20);
         limelight.start();
     }
 
     public Pose lowPassFilter(Pose newPose, double smoothingFactor)
     {
-        double newX = smoothingFactor * newPose.getX() + (1 - smoothingFactor) * lastPose.getX();
-        double newY = smoothingFactor * newPose.getY() + (1 - smoothingFactor) * lastPose.getY();
-        double newHeading = smoothingFactor * newPose.getHeading() + (1 - smoothingFactor) * lastPose.getHeading();
+        if(lastPose.equals(new Pose(0, 0, 0)))
+        {
+            return newPose;
+        }
+
+        double newX = MathUtilities.lowPass(newPose.getX(), lastPose.getX(), smoothingFactor);
+        double newY = MathUtilities.lowPass(newPose.getY(), lastPose.getY(), smoothingFactor);
+        double newHeading = MathUtilities.lowPass(newPose.getHeading(), lastPose.getHeading(), smoothingFactor);
 
         return new Pose(newX, newY, newHeading);
     }
 
-    public Pose positionFromTag(double heading, TelemetryManager telemetry)
+    public Pose positionFromTag()
     {
         LLResult result = limelight.getLatestResult();
 
-        if(result != null && result.isValid()) {
-            Pose3D botpose = result.getBotpose();
-            if (botpose != null) {
-                Pose2D botpose2D = new Pose2D(
-                        DistanceUnit.INCH,
-                        botpose.getPosition().toUnit(DistanceUnit.INCH).x,
-                        botpose.getPosition().toUnit(DistanceUnit.INCH).y,
-                        AngleUnit.DEGREES,
-                        botpose.getOrientation().getYaw()
-                );
+        if(result != null && result.isValid())
+        {
+            Pose3D robotPos = result.getBotpose();
 
-                Pose botposeFTC   = PoseConverter.pose2DToPose(botpose2D, InvertedFTCCoordinates.INSTANCE);
-                Pose botposePedro = botposeFTC.getAsCoordinateSystem(PedroCoordinates.INSTANCE);
+            double angle = robotPos.getOrientation().getYaw(AngleUnit.DEGREES) - 90;
 
-                telemetry.addData("MT2 Pedro X", botposePedro.getX());
-                telemetry.addData("MT2 Pedro Y", botposePedro.getY());
-
-                Pose filteredPose = lowPassFilter(botposePedro, 0.5);
-                telemetry.addData("Filtered Lime X", filteredPose.getX());
-                telemetry.addData("Filtered Lime Y", filteredPose.getY());
-
-                lastPose = filteredPose;
-                return filteredPose;
-            }
+            return new Pose(
+                    robotPos.getPosition().y / 0.0254 + 70.625,
+                    -robotPos.getPosition().x / 0.0254 + 70.625,
+                    Math.toRadians(angle));
         }
 
         return null;

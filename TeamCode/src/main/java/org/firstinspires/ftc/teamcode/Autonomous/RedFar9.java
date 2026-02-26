@@ -22,15 +22,15 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 
-@Autonomous(name = "RedFar")
-public class RedFar extends NextFTCOpMode {
+@Autonomous(name = "RedFar9")
+public class RedFar9 extends NextFTCOpMode {
     private final double TIME_TO_SHOOT_PRELOAD = 3.0;
 
     private FarPathsRed paths;
     private Shooter shooter;
     private Intake intake;
 
-    public RedFar()
+    public RedFar9()
     {
         addComponents(
                 new PedroComponent(Constants::createFollower));
@@ -111,6 +111,23 @@ public class RedFar extends NextFTCOpMode {
 
                 // Go back to shooting pose
                 new FollowPath(paths.shootPGP),
+                prepareShooters.then(
+                        stopIntake,
+                        new Delay(2.0)
+                ),
+
+                // Shoot
+                new ParallelGroup(
+                        shoot,
+                        new Delay(TIME_TO_SHOOT_PRELOAD)
+                ),
+                stopShooter,
+
+                // Start intake and get GPP
+                intake.startCommand(),
+                new FollowPath(paths.intakeGPP),
+
+                new FollowPath(paths.shootGPP),
                 prepareShooters.then(
                         stopIntake,
                         new Delay(2.0)

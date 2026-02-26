@@ -58,7 +58,7 @@ public class TulipRed2P extends OpMode {
             return 0;
         }
 
-        targetHeading = Math.atan2(138 - follower.getPose().getY(), 132 - follower.getPose().getX());
+        targetHeading = Math.atan2(134 - follower.getPose().getY(), 132 - follower.getPose().getX());
 
         return MathFunctions.getTurnDirection(follower.getPose().getHeading(), targetHeading)
                 * MathFunctions.getSmallestAngleDifference(follower.getPose().getHeading(), targetHeading);
@@ -67,6 +67,20 @@ public class TulipRed2P extends OpMode {
     private void updateDrive(Gamepad gamepad) {
         headingController.setCoefficients(follower.constants.coefficientsHeadingPIDF);
         headingController.updateError(getHeadingError());
+
+        if(gamepad.rightStickButtonWasPressed())
+        {
+            follower.setPose(new Pose(135, 9, 0));
+        }
+
+        if(gamepad.leftStickButtonWasPressed())
+        {
+            Pose limelightPose = limelight.positionFromTag();
+            if(limelightPose != null)
+            {
+                follower.setPose(limelightPose);
+            }
+        }
 
         if (gamepad.yWasPressed()) {
             headingLock = !headingLock;
@@ -105,17 +119,12 @@ public class TulipRed2P extends OpMode {
     {
         updateDrive(gamepad1);
 
-        double distance = MathUtilities.calculateDistance(132, 138, follower.getPose().getX(), follower.getPose().getY());
+        double heading = follower.getHeading();
 
+
+        double distance = MathUtilities.calculateDistance(132, 134, follower.getPose().getX(), follower.getPose().getY());
         shooter.update(gamepad2, distance);
         shooter.hoodRegression(distance);
-        double heading = follower.getHeading();
-        Pose relocalizationPose = limelight.positionFromTag(heading, telemetryM);
-        if(relocalizationPose != null && System.nanoTime() % 100 == 0)
-        {
-            follower.setPose(relocalizationPose);
-        }
-
         intake.update(gamepad1, gamepad2);
 
         updateTelemetry();

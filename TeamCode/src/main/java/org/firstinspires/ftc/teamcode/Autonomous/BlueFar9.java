@@ -4,8 +4,7 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Paths.FarPathsRed;
-import org.firstinspires.ftc.teamcode.Paths.PathsBlue;
+import org.firstinspires.ftc.teamcode.Paths.FarPathsBlue;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -22,15 +21,15 @@ import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 
-@Autonomous(name = "RedFar")
-public class RedFar extends NextFTCOpMode {
-    private final double TIME_TO_SHOOT_PRELOAD = 3.0;
+@Autonomous(name = "BlueFar9")
+public class BlueFar9 extends NextFTCOpMode {
+    private final double TIME_TO_SHOOT_PRELOAD = 5.0;
 
-    private FarPathsRed paths;
+    private FarPathsBlue paths;
     private Shooter shooter;
     private Intake intake;
 
-    public RedFar()
+    public BlueFar9()
     {
         addComponents(
                 new PedroComponent(Constants::createFollower));
@@ -38,9 +37,9 @@ public class RedFar extends NextFTCOpMode {
 
     private SequentialGroup autonomousRoutine()
     {
-        PedroComponent.follower().setStartingPose(FarPathsRed.startPose);
+        PedroComponent.follower().setStartingPose(FarPathsBlue.startPose);
 
-        paths = new FarPathsRed(PedroComponent.follower());
+        paths = new FarPathsBlue(PedroComponent.follower());
 
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
@@ -111,6 +110,23 @@ public class RedFar extends NextFTCOpMode {
 
                 // Go back to shooting pose
                 new FollowPath(paths.shootPGP),
+                prepareShooters.then(
+                        stopIntake,
+                        new Delay(1.5)
+                ),
+
+                // Shoot
+                new ParallelGroup(
+                        shoot,
+                        new Delay(TIME_TO_SHOOT_PRELOAD)
+                ),
+                stopShooter,
+
+                // Start intake and get GPP
+                intake.startCommand(),
+                new FollowPath(paths.intakeGPP),
+
+                new FollowPath(paths.shootGPP),
                 prepareShooters.then(
                         stopIntake,
                         new Delay(2.0)

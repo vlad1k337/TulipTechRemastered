@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystem;
 
+import com.arcrobotics.ftclib.util.InterpLUT;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import dev.nextftc.core.commands.utility.InstantCommand;
+import smile.interpolation.LinearInterpolation;
 
 public class Shooter {
     private final DcMotorEx flywheel;
@@ -19,20 +21,23 @@ public class Shooter {
     private final LED gateIndicator;
     private final LED flywheelIndicator;
 
+    private LinearInterpolation hood_lut;
+    private LinearInterpolation flywheel_lut;
     public static final double MID_LINE_VELOCITY = 1340;
     public static final double FAR_VELOCITY = 1700;
 
     private double hoodManualAdjustment = 0.0;
-    private double HOOD_NEAR = 0.42;
-    private double HOOD_FAR  = 0.53;
+    private final double HOOD_NEAR = 0.42;
+    private final double HOOD_FAR  = 0.53;
 
     private double targetVelocity = 0;
     private double targetGatePos  = HOOD_NEAR;
 
+    private boolean flywheelOn = false;
     private boolean gateClosed = false;
 
     // kV = 1 / MAX_RPM, and adjusted for kS
-    public double kS = 0.049, kV = 0.00038, kP = 0.01;
+    private final double kS = 0.049, kV = 0.00038, kP = 0.005;
 
     public Shooter(HardwareMap hardwareMap) {
         flywheel = hardwareMap.get(DcMotorEx.class, "Shooter");
@@ -41,11 +46,13 @@ public class Shooter {
         flywheel.setMotorType(flywheelConfig);
         flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        initVelocityLut();
 
         hood = hardwareMap.get(Servo.class, "Hood");
         gate = hardwareMap.get(Servo.class, "Gate");
         gateIndicator = hardwareMap.get(LED.class, "GateIndicator");
         flywheelIndicator = hardwareMap.get(LED.class, "FlywheelIndicator");
+        gateClose();
     }
 
     public void update(Gamepad gamepad, double distance)
@@ -58,33 +65,26 @@ public class Shooter {
     {
         if(gamepad.dpadUpWasPressed())
         {
-            targetVelocity = MID_LINE_VELOCITY;
-            gateClose();
+            flywheelOn = true;
         }
 
         if(gamepad.dpadDownWasPressed())
         {
             targetVelocity = 0;
+            flywheelOn = false;
         }
 
         if(gamepad.dpadLeftWasPressed()) {
-            hoodManualAdjustment += 0.025;
+            hoodManualAdjustment += 0.005;
         } else if(gamepad.dpadRightWasPressed()) {
-            hoodManualAdjustment -= 0.025;
+            hoodManualAdjustment -= 0.005;
         }
 
         if(gamepad.rightBumperWasPressed())
         {
-            setVelocity(targetVelocity + 50);
+            setVelocity(targetVelocity + 10);
         } else if(gamepad.leftBumperWasPressed()){
-            setVelocity(targetVelocity - 50);
-        }
-
-        if(gamepad.rightStickButtonWasPressed())
-        {
-            hoodRegression(distance);
-        } else if(gamepad.leftStickButtonWasPressed()) {
-            hoodNear();
+            setVelocity(targetVelocity - 10);
         }
 
         if(gamepad.left_trigger > 0.2)
@@ -94,8 +94,8 @@ public class Shooter {
             gateOpen();
         }
 
+        velocityRegression(distance);
         hood.setPosition(targetGatePos);
-
     }
 
     public void updateFeedforward()
@@ -170,11 +170,26 @@ public class Shooter {
 
     public void hoodRegression(double distance)
     {
-        targetGatePos = -0.0000751855 * distance * distance + 0.0132971 * distance - 0.142975 + hoodManualAdjustment;
+        targetGatePos = hood_lut.interpolate(distance) + hoodManualAdjustment;
+    }
+
+    public void initVelocityLut()
+    {
+        double[] distances = {60, 52, 68, 65, 71, 78, 54, 57, 41, 46, 37, 89, 77, 84, 82};
+        double[] hood_positions = {0.43, 0.415, 0.435, 0.435, 0.43, 0.435, 0.415, 0.415, 0.42, 0.425, 0.41, 0.45, 0.44, 0.45, 0.45};
+        double[] velocities = {1340, 1320, 1400, 1360, 1410, 1470, 1320, 1350, 1310, 1320, 1290, 1520, 1500, 1450, 1450};
+
+        hood_lut = new LinearInterpolation(distances, hood_positions);
+        flywheel_lut = new LinearInterpolation(distances, velocities);
     }
 
     public void velocityRegression(double distance)
     {
-        targetVelocity = -0.0773848 * distance * distance + 14.4288 * distance + 724.07684;
+        if(!flywheelOn)
+        {
+            return;
+        }
+
+        targetVelocity = flywheel_lut.interpolate(distance);
     }
 }

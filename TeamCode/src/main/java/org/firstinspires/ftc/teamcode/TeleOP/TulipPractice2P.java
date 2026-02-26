@@ -68,6 +68,15 @@ public class TulipPractice2P extends OpMode {
         headingController.setCoefficients(follower.constants.coefficientsHeadingPIDF);
         headingController.updateError(getHeadingError());
 
+        if(gamepad.leftStickButtonWasPressed())
+        {
+            Pose limelightPose = limelight.positionFromTag();
+            if(limelightPose != null)
+            {
+                follower.setPose(limelightPose);
+            }
+        }
+
         if (gamepad.yWasPressed()) {
             headingLock = !headingLock;
         }
@@ -106,18 +115,12 @@ public class TulipPractice2P extends OpMode {
     {
         updateDrive(gamepad1);
 
-        double distance = MathUtilities.calculateDistance(132, 138, follower.getPose().getX(), follower.getPose().getY());
+        double heading = follower.getHeading();
 
+        double distance = MathUtilities.calculateDistance(132, 138, follower.getPose().getX(), follower.getPose().getY());
         shooter.update(gamepad2, distance);
         shooter.hoodRegression(distance);
         intake.update(gamepad1, gamepad2);
-
-        double heading = follower.getHeading();
-        Pose relocalizationPose = limelight.positionFromTag(heading, telemetryM);
-        if(relocalizationPose != null && System.nanoTime() % 100 == 0)
-        {
-            follower.setPose(relocalizationPose);
-        }
 
         updateTelemetry();
     }

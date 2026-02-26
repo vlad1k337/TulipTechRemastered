@@ -39,8 +39,10 @@ public class Intake {
 
     public void start()
     {
-        intake.setPower(-1.0);
+        intake.setPower(-0.8);
     }
+
+    public void startWithPower(double power) { intake.setPower(-power); }
 
     public void reverse() { intake.setPower(1.0);}
 
@@ -52,6 +54,11 @@ public class Intake {
     public InstantCommand startCommand()
     {
         return new InstantCommand(this::start);
+    }
+
+    public InstantCommand startWithPowerCommand(double power)
+    {
+        return new InstantCommand(() -> startWithPower(0.5));
     }
 
     public InstantCommand stopCommand()
